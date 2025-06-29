@@ -25,7 +25,7 @@ export const FieldLayout = ({
 			}
 		}
 		setField(arr);
-		target.innerHTML = currentPlayer;
+		target.textContent = currentPlayer;
 	};
 
 	let win = '';
