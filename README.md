@@ -1,3 +1,3 @@
 # React + Vite
 
-Task List on Ract
+Tic Tac Toe
