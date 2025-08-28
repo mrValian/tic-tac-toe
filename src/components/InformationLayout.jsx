@@ -10,8 +10,6 @@ export const InformationLayout = () => {
 
 	const checStatus = (player) => {
 
-		// const { isDraw, isGameEnded, currentPlayer } = store.getState();
-
 		let str = 'Играем';
 		if (isDraw) {
 			str = 'Ничья';
