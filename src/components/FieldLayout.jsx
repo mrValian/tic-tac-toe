@@ -1,19 +1,32 @@
 import style from './fieldLayout.module.css';
 
-import PropTypes from 'prop-types';
+import { store } from '../store';
 
-export const FieldLayout = ({
-	field,
-	setField,
-	currentPlayer,
-	setCurrentPlayer,
-	setIsGameEnded,
-	setIsDraw,
-	isDraw,
-	isGameEnded,
-}) => {
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+
+export const FieldLayout = () => {
+
+	const [field, setField] = useState(store.getState().field);
+	const [currentPlayer, setCurrentPlayer] = useState(store.getState().currentPlayer);
+	const [isDraw, setIsDraw] = useState(store.getState().isDraw);
+	const [isGameEnded, setIsGameEnded] = useState(store.getState().isGameEnded);
+
+  useEffect(() => {
+    
+    const unsubscribe = store.subscribe(() => {
+      setField(store.getState().field);
+	  setCurrentPlayer(store.getState().currentPlayer);
+	  setIsDraw(store.getState().isDraw);
+	  setIsGameEnded(store.getState().isGameEnded);
+    });
+
+    return unsubscribe;
+  }, []);
+
 	const gameAction = (event) => {
-		currentPlayer === 'X' ? setCurrentPlayer('0') : setCurrentPlayer('X');
+
+		currentPlayer === 'X' ? store.dispatch({type: 'SET_CURRENT_PLAYER', payload: '0'}) : store.dispatch({type: 'SET_CURRENT_PLAYER', payload: 'X'});
 		const { target } = event;
 		let curentBlock = target.dataset.block;
 		let arr = [];
@@ -24,7 +37,7 @@ export const FieldLayout = ({
 				arr[i] = field[i];
 			}
 		}
-		setField(arr);
+		store.dispatch({type: 'SET_FIELD', payload: arr});
 		target.textContent = currentPlayer;
 	};
 
@@ -64,23 +77,24 @@ export const FieldLayout = ({
 	}
 
 	if (win === 'X') {
-		setIsGameEnded(true);
-		setCurrentPlayer('X');
+		console.log(win);
+		store.dispatch({type: 'SET_GAME_END', payload: true});
+		store.dispatch({type: 'SET_CURRENT_PLAYER', payload: 'X'});
 	} else if (win === '0') {
-		setIsGameEnded(true);
-		setCurrentPlayer('0');
+		store.dispatch({type: 'SET_GAME_END', payload: true});
+		store.dispatch({type: 'SET_CURRENT_PLAYER', payload: '0'});
 	}
 
 	let checkField = field.every((elem) => elem !== '');
 	if (checkField && win === '') {
-		setIsDraw(true);
+		store.dispatch({type: 'SET_DRAW', payload: true});
 	}
 
 	const stratOver = () => {
-		setIsDraw(false);
-		setIsGameEnded(false);
-		setCurrentPlayer('X');
-		setField(['', '', '', '', '', '', '', '', '']);
+		store.dispatch({type: 'SET_DRAW', payload: false});
+		store.dispatch({type: 'SET_GAME_END', payload: false});
+		store.dispatch({type: 'SET_CURRENT_PLAYER', payload: 'X'});
+		store.dispatch({type: 'SET_FIELD', payload: ['', '', '', '', '', '', '', '', '']});
 	};
 
 	return (

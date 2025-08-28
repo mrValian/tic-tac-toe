@@ -1,27 +1,9 @@
 import { FieldLayout } from './FieldLayout';
 
-export const Field = ({
-	field,
-	setField,
-	currentPlayer,
-	setCurrentPlayer,
-	setIsGameEnded,
-	setIsDraw,
-	isDraw,
-	isGameEnded,
-}) => {
+export const Field = () => {
 	return (
 		<div>
-			<FieldLayout
-				field={field}
-				setField={setField}
-				currentPlayer={currentPlayer}
-				setCurrentPlayer={setCurrentPlayer}
-				setIsGameEnded={setIsGameEnded}
-				setIsDraw={setIsDraw}
-				isDraw={isDraw}
-				isGameEnded={isGameEnded}
-			/>
+			<FieldLayout />
 		</div>
 	);
 };

@@ -1,9 +1,17 @@
 import style from './informationLayout.module.css';
 
+import { store } from '../store';
+
 import PropTypes from 'prop-types';
 
-export const InformationLayout = ({ isDraw, isGameEnded, currentPlayer }) => {
+export const InformationLayout = () => {
+
+	const { isDraw, isGameEnded, currentPlayer } = store.getState();
+
 	const checStatus = (player) => {
+
+		// const { isDraw, isGameEnded, currentPlayer } = store.getState();
+
 		let str = 'Играем';
 		if (isDraw) {
 			str = 'Ничья';
