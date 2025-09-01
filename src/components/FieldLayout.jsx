@@ -2,7 +2,7 @@ import style from './fieldLayout.module.css';
 
 import { store } from '../store';
 
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 
 export const FieldLayout = () => {
@@ -13,7 +13,7 @@ export const FieldLayout = () => {
 	const [isGameEnded, setIsGameEnded] = useState(store.getState().isGameEnded);
 
   useEffect(() => {
-    
+
     const unsubscribe = store.subscribe(() => {
       setField(store.getState().field);
 	  setCurrentPlayer(store.getState().currentPlayer);
@@ -25,6 +25,7 @@ export const FieldLayout = () => {
   }, []);
 
 	const gameAction = (event) => {
+		checkGameState();
 
 		currentPlayer === 'X' ? store.dispatch({type: 'SET_CURRENT_PLAYER', payload: '0'}) : store.dispatch({type: 'SET_CURRENT_PLAYER', payload: 'X'});
 		const { target } = event;
@@ -38,7 +39,7 @@ export const FieldLayout = () => {
 			}
 		}
 		store.dispatch({type: 'SET_FIELD', payload: arr});
-		target.textContent = currentPlayer;
+		// target.textContent = currentPlayer;
 	};
 
 	let win = '';
@@ -76,19 +77,26 @@ export const FieldLayout = () => {
 		win = '0';
 	}
 
-	if (win === 'X') {
-		console.log(win);
-		store.dispatch({type: 'SET_GAME_END', payload: true});
-		store.dispatch({type: 'SET_CURRENT_PLAYER', payload: 'X'});
-	} else if (win === '0') {
-		store.dispatch({type: 'SET_GAME_END', payload: true});
-		store.dispatch({type: 'SET_CURRENT_PLAYER', payload: '0'});
-	}
+	const checkGameState = () => {
+		if (win === 'X') {
+			store.dispatch({type: 'SET_GAME_END', payload: true});
+			store.dispatch({type: 'SET_CURRENT_PLAYER', payload: 'X'});
+			return 'x';
+		} else if (win === '0') {
+			store.dispatch({type: 'SET_GAME_END', payload: true});
+			store.dispatch({type: 'SET_CURRENT_PLAYER', payload: '0'});
+			return '0';
+		}
 
-	let checkField = field.every((elem) => elem !== '');
-	if (checkField && win === '') {
-		store.dispatch({type: 'SET_DRAW', payload: true});
-	}
+		// let checkField = field.every((elem) => elem !== '');
+		if (field.every((elem) => elem !== '') && win === '') {
+			store.dispatch({type: 'SET_DRAW', payload: true});
+			return 'draw';
+		}
+
+		return 'continue';
+	};
+	
 
 	const stratOver = () => {
 		store.dispatch({type: 'SET_DRAW', payload: false});
@@ -97,32 +105,51 @@ export const FieldLayout = () => {
 		store.dispatch({type: 'SET_FIELD', payload: ['', '', '', '', '', '', '', '', '']});
 	};
 
+	const checStatus = (player) => {
+
+		let str = 'Играем';
+		if (isDraw) {
+			str = 'Ничья';
+		} else if (isDraw === false && isGameEnded === true) {
+			str = `Победа: ${player}`;
+		} else if (isDraw === false && isGameEnded === false) {
+			str = `Ходит: ${player}`;
+		}
+		return str;
+	};
+
 	return (
-		<div className={style.field}>
-			{field.map((elem, i) => (
-				<div
-					onClick={(e) => (isDraw || isGameEnded ? '' : gameAction(e))}
-					data-block={i}
-					className={style.block}
-					key={i}
-				>
-					{elem}
+		<div>
+			<div className={style.info}>
+						<div>{checStatus(currentPlayer)}</div>
+			</div>
+			<div className={style.field}>
+				{field.map((elem, i) => (
+					<div
+						onClick={(e) => (isDraw || isGameEnded ? '' : gameAction(e))}
+						data-block={i}
+						className={style.block}
+						key={i}
+					>
+						{elem}
+					</div>
+				))}
+				<div className={style['btn-wrap']}>
+					<button onClick={stratOver}>Начать Заново</button>
 				</div>
-			))}
-			<div className={style['btn-wrap']}>
-				<button onClick={stratOver}>Начать Заново</button>
 			</div>
 		</div>
+		
 	);
 };
 
-FieldLayout.propTypes = {
-	field: PropTypes.array,
-	setField: PropTypes.func,
-	currentPlayer: PropTypes.string,
-	setCurrentPlayer: PropTypes.func,
-	setIsGameEnded: PropTypes.func,
-	setIsDraw: PropTypes.func,
-	isDraw: PropTypes.bool,
-	isGameEnded: PropTypes.bool,
-};
+// FieldLayout.propTypes = {
+// 	field: PropTypes.array,
+// 	setField: PropTypes.func,
+// 	currentPlayer: PropTypes.string,
+// 	setCurrentPlayer: PropTypes.func,
+// 	setIsGameEnded: PropTypes.func,
+// 	setIsDraw: PropTypes.func,
+// 	isDraw: PropTypes.bool,
+// 	isGameEnded: PropTypes.bool,
+// };
