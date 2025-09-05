@@ -2,32 +2,21 @@ import style from './fieldLayout.module.css';
 
 import { store } from '../store';
 
-// import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {selectDraw, selectGameEnd, selectCurrentPlayer, selectField} from '../selectors';
+import { setCurrentPlayer, setDraw, setField, setGameEnd } from '../actions';
 
 export const FieldLayout = () => {
+	const dispatch = useDispatch();
 
-	const [field, setField] = useState(store.getState().field);
-	const [currentPlayer, setCurrentPlayer] = useState(store.getState().currentPlayer);
-	const [isDraw, setIsDraw] = useState(store.getState().isDraw);
-	const [isGameEnded, setIsGameEnded] = useState(store.getState().isGameEnded);
-
-  useEffect(() => {
-
-    const unsubscribe = store.subscribe(() => {
-      setField(store.getState().field);
-	  setCurrentPlayer(store.getState().currentPlayer);
-	  setIsDraw(store.getState().isDraw);
-	  setIsGameEnded(store.getState().isGameEnded);
-    });
-
-    return unsubscribe;
-  }, []);
+	const isDraw = useSelector(selectDraw);
+	const isGameEnded = useSelector(selectGameEnd);
+	const currentPlayer = useSelector(selectCurrentPlayer);
+	const field = useSelector(selectField);
 
 	const gameAction = (event) => {
-		checkGameState();
 
-		currentPlayer === 'X' ? store.dispatch({type: 'SET_CURRENT_PLAYER', payload: '0'}) : store.dispatch({type: 'SET_CURRENT_PLAYER', payload: 'X'});
+		currentPlayer === 'X' ? dispatch(setCurrentPlayer('0')) : dispatch(setCurrentPlayer('X'));
 		const { target } = event;
 		let curentBlock = target.dataset.block;
 		let arr = [];
@@ -38,8 +27,8 @@ export const FieldLayout = () => {
 				arr[i] = field[i];
 			}
 		}
-		store.dispatch({type: 'SET_FIELD', payload: arr});
-		// target.textContent = currentPlayer;
+		dispatch(setField(arr));
+		checkGameState();
 	};
 
 	let win = '';
@@ -79,18 +68,18 @@ export const FieldLayout = () => {
 
 	const checkGameState = () => {
 		if (win === 'X') {
-			store.dispatch({type: 'SET_GAME_END', payload: true});
-			store.dispatch({type: 'SET_CURRENT_PLAYER', payload: 'X'});
+			store.dispatch(setGameEnd(true));
+			store.dispatch(setCurrentPlayer('X'));
 			return 'x';
 		} else if (win === '0') {
-			store.dispatch({type: 'SET_GAME_END', payload: true});
-			store.dispatch({type: 'SET_CURRENT_PLAYER', payload: '0'});
+			store.dispatch(setGameEnd(true));
+			store.dispatch(setCurrentPlayer('0'));
 			return '0';
 		}
 
 		// let checkField = field.every((elem) => elem !== '');
 		if (field.every((elem) => elem !== '') && win === '') {
-			store.dispatch({type: 'SET_DRAW', payload: true});
+			store.dispatch(setDraw(true));
 			return 'draw';
 		}
 
@@ -99,30 +88,14 @@ export const FieldLayout = () => {
 	
 
 	const stratOver = () => {
-		store.dispatch({type: 'SET_DRAW', payload: false});
-		store.dispatch({type: 'SET_GAME_END', payload: false});
-		store.dispatch({type: 'SET_CURRENT_PLAYER', payload: 'X'});
-		store.dispatch({type: 'SET_FIELD', payload: ['', '', '', '', '', '', '', '', '']});
-	};
-
-	const checStatus = (player) => {
-
-		let str = 'Играем';
-		if (isDraw) {
-			str = 'Ничья';
-		} else if (isDraw === false && isGameEnded === true) {
-			str = `Победа: ${player}`;
-		} else if (isDraw === false && isGameEnded === false) {
-			str = `Ходит: ${player}`;
-		}
-		return str;
+		store.dispatch(setDraw(false));
+		store.dispatch(setGameEnd(false));
+		store.dispatch(setCurrentPlayer('X'));
+		store.dispatch(setField(['', '', '', '', '', '', '', '', '']));
 	};
 
 	return (
 		<div>
-			<div className={style.info}>
-						<div>{checStatus(currentPlayer)}</div>
-			</div>
 			<div className={style.field}>
 				{field.map((elem, i) => (
 					<div
@@ -142,14 +115,3 @@ export const FieldLayout = () => {
 		
 	);
 };
-
-// FieldLayout.propTypes = {
-// 	field: PropTypes.array,
-// 	setField: PropTypes.func,
-// 	currentPlayer: PropTypes.string,
-// 	setCurrentPlayer: PropTypes.func,
-// 	setIsGameEnded: PropTypes.func,
-// 	setIsDraw: PropTypes.func,
-// 	isDraw: PropTypes.bool,
-// 	isGameEnded: PropTypes.bool,
-// };
