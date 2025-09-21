@@ -1,9 +1,16 @@
+import { Component } from 'react';
 import { InformationLayout } from './InformationLayout';
 
-export const Information = () => {
-	return (
-		<div>
-			<InformationLayout />
-		</div>
-	);
-};
+export class OldInformation extends Component {
+	constructor() {
+		super();
+	}
+
+	render() {
+		return (
+			<div>
+				<InformationLayout />
+			</div>
+		);
+	}
+}

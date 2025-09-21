@@ -1,14 +1,20 @@
-import { Information } from './Information';
-import { Field } from './Field';
+import { OldInformation } from './Information';
+import { OldField } from './Field';
 
-import style from './gameLayout.module.css';
+import { Component } from 'react';
 
-export const GameLayout = () => {
-	
-	return (
-		<div className={style.game}>
-			<Information />
-			<Field />
-		</div>
-	);
-};
+
+export class OldGameLayout extends Component {
+	constructor() {
+		super();
+	}
+
+	render() {
+		return (
+			<div className='w-sm m-auto'>
+				<OldInformation />
+				<OldField />
+			</div>
+		);
+	}
+}

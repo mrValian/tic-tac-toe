@@ -1,117 +1,126 @@
-import style from './fieldLayout.module.css';
 
-import { store } from '../store';
+import { Component } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
-import {selectDraw, selectGameEnd, selectCurrentPlayer, selectField} from '../selectors';
+import { connect } from 'react-redux';
 import { setCurrentPlayer, setDraw, setField, setGameEnd } from '../actions';
 
-export const FieldLayout = () => {
-	const dispatch = useDispatch();
+export class OldFieldLayout extends Component {
+	constructor(field, isDraw, isGameEnded, currentPlayer, dispatch) {
+		super(field, isDraw, isGameEnded, currentPlayer, dispatch);
+		this.state = {
+			win: '',
+		}
+	}
 
-	const isDraw = useSelector(selectDraw);
-	const isGameEnded = useSelector(selectGameEnd);
-	const currentPlayer = useSelector(selectCurrentPlayer);
-	const field = useSelector(selectField);
-
-	const gameAction = (event) => {
-
-		currentPlayer === 'X' ? dispatch(setCurrentPlayer('0')) : dispatch(setCurrentPlayer('X'));
+	gameAction = (event) => {
+		this.props.currentPlayer === 'X' ? this.props.dispatch(setCurrentPlayer('0')) : this.props.dispatch(setCurrentPlayer('X'));
 		const { target } = event;
 		let curentBlock = target.dataset.block;
 		let arr = [];
-		for (let i = 0; i < field.length; i++) {
+		for (let i = 0; i < this.props.field.length; i++) {
 			if (i === +curentBlock) {
-				arr[i] = currentPlayer;
+				arr[i] = this.props.currentPlayer;
 			} else {
-				arr[i] = field[i];
+				arr[i] = this.props.field[i];
 			}
 		}
-		dispatch(setField(arr));
-		checkGameState();
+		this.props.dispatch(setField(arr));
+
+		this.checkStatusGame();
 	};
 
-	let win = '';
-	if (field[0] === 'X' && field[1] === 'X' && field[2] === 'X') {
-		win = 'X';
-	} else if (field[0] === '0' && field[1] === '0' && field[2] === '0') {
-		win = '0';
-	} else if (field[3] === 'X' && field[4] === 'X' && field[5] === 'X') {
-		win = 'X';
-	} else if (field[3] === '0' && field[4] === '0' && field[5] === '0') {
-		win = '0';
-	} else if (field[6] === 'X' && field[7] === 'X' && field[8] === 'X') {
-		win = 'X';
-	} else if (field[6] === '0' && field[7] === '0' && field[8] === '0') {
-		win = '0';
-	} else if (field[0] === 'X' && field[3] === 'X' && field[6] === 'X') {
-		win = 'X';
-	} else if (field[0] === '0' && field[3] === '0' && field[6] === '0') {
-		win = '0';
-	} else if (field[1] === 'X' && field[4] === 'X' && field[7] === 'X') {
-		win = 'X';
-	} else if (field[1] === '0' && field[4] === '0' && field[7] === '0') {
-		win = '0';
-	} else if (field[2] === 'X' && field[5] === 'X' && field[8] === 'X') {
-		win = 'X';
-	} else if (field[2] === '0' && field[5] === '0' && field[8] === '0') {
-		win = '0';
-	} else if (field[0] === 'X' && field[4] === 'X' && field[8] === 'X') {
-		win = 'X';
-	} else if (field[0] === '0' && field[4] === '0' && field[8] === '0') {
-		win = '0';
-	} else if (field[2] === 'X' && field[4] === 'X' && field[6] === 'X') {
-		win = 'X';
-	} else if (field[2] === '0' && field[4] === '0' && field[6] === '0') {
-		win = '0';
+	checkStatusGame = () => {
+		if (this.props.field[0] === 'X' && this.props.field[1] === 'X' && this.props.field[2] === 'X') {
+			this.setState({win: 'X'});
+		} else if (this.props.field[0] === '0' && this.props.field[1] === '0' && this.props.field[2] === '0') {
+			this.setState({win: '0'});
+		} else if (this.props.field[3] === 'X' && this.props.field[4] === 'X' && this.props.field[5] === 'X') {
+			this.setState({win: 'X'});
+		} else if (this.props.field[3] === '0' && this.props.field[4] === '0' && this.props.field[5] === '0') {
+			this.setState({win: '0'});
+		} else if (this.props.field[6] === 'X' && this.props.field[7] === 'X' && this.props.field[8] === 'X') {
+			this.setState({win: 'X'});
+		} else if (this.props.field[6] === '0' && this.props.field[7] === '0' && this.props.field[8] === '0') {
+			this.setState({win: '0'});
+		} else if (this.props.field[0] === 'X' && this.props.field[3] === 'X' && this.props.field[6] === 'X') {
+			this.setState({win: 'X'});
+		} else if (this.props.field[0] === '0' && this.props.field[3] === '0' && this.props.field[6] === '0') {
+			this.setState({win: '0'});
+		} else if (this.props.field[1] === 'X' && this.props.field[4] === 'X' && this.props.field[7] === 'X') {
+			this.setState({win: 'X'});
+		} else if (this.props.field[1] === '0' && this.props.field[4] === '0' && this.props.field[7] === '0') {
+			this.setState({win: '0'});
+		} else if (this.props.field[2] === 'X' && this.props.field[5] === 'X' && this.props.field[8] === 'X') {
+			this.setState({win: 'X'});
+		} else if (this.props.field[2] === '0' && this.props.field[5] === '0' && this.props.field[8] === '0') {
+			this.setState({win: '0'});
+		} else if (this.props.field[0] === 'X' && this.props.field[4] === 'X' && this.props.field[8] === 'X') {
+			this.setState({win: 'X'});
+		} else if (this.props.field[0] === '0' && this.props.field[4] === '0' && this.props.field[8] === '0') {
+			this.setState({win: '0'});
+		} else if (this.props.field[2] === 'X' && this.props.field[4] === 'X' && this.props.field[6] === 'X') {
+			this.setState({win: 'X'});
+		} else if (this.props.field[2] === '0' && this.props.field[4] === '0' && this.props.field[6] === '0') {
+			this.setState({win: '0'});
+		}
+
+		this.checkGameState();
 	}
 
-	const checkGameState = () => {
-		if (win === 'X') {
-			store.dispatch(setGameEnd(true));
-			store.dispatch(setCurrentPlayer('X'));
-			return 'x';
-		} else if (win === '0') {
-			store.dispatch(setGameEnd(true));
-			store.dispatch(setCurrentPlayer('0'));
-			return '0';
-		}
+		checkGameState = () => {
+			if (this.state.win === 'X') {
+				this.props.dispatch(setGameEnd(true));
+				this.props.dispatch(setCurrentPlayer('X'));
+				return 'x';
+			} else if (this.state.win === '0') {
+				this.props.dispatch(setGameEnd(true));
+				this.props.dispatch(setCurrentPlayer('0'));
+				return '0';
+			}
 
-		// let checkField = field.every((elem) => elem !== '');
-		if (field.every((elem) => elem !== '') && win === '') {
-			store.dispatch(setDraw(true));
-			return 'draw';
-		}
+			if (this.props.field.every((elem) => elem !== '') && this.state.win === '') {
+				this.props.dispatch(setDraw(true));
+				return 'draw';
+			}
 
-		return 'continue';
-	};
-	
+			return 'continue';
+		};
 
-	const stratOver = () => {
-		store.dispatch(setDraw(false));
-		store.dispatch(setGameEnd(false));
-		store.dispatch(setCurrentPlayer('X'));
-		store.dispatch(setField(['', '', '', '', '', '', '', '', '']));
+	startOver = () => {
+		this.props.dispatch(setDraw(false));
+		this.props.dispatch(setGameEnd(false));
+		this.props.dispatch(setCurrentPlayer('X'));
+		this.props.dispatch(setField(['', '', '', '', '', '', '', '', '']));
 	};
 
-	return (
-		<div>
-			<div className={style.field}>
-				{field.map((elem, i) => (
+	render() {
+		return (
+			<div>
+			<div className='flex flex-wrap'>
+				{this.props.field.map((elem, i) => (
 					<div
-						onClick={(e) => (isDraw || isGameEnded ? '' : gameAction(e))}
+						onClick={(e) => (this.props.isDraw || this.props.isGameEnded ? '' : this.gameAction(e))}
 						data-block={i}
-						className={style.block}
+						className='w-30 h-30 border border-indigo-600 m-1 p-7 text-center text-5xl box-border'
 						key={i}
 					>
 						{elem}
 					</div>
 				))}
-				<div className={style['btn-wrap']}>
-					<button onClick={stratOver}>Начать Заново</button>
+				<div className='m-auto'>
+					<button onClick={this.startOver}>Начать Заново</button>
 				</div>
 			</div>
 		</div>
-		
-	);
-};
+		);
+	}
+}
+
+const mapStateToProps = (state) => ({
+	isDraw: state.isDraw,
+	currentPlayer: state.currentPlayer,
+	isGameEnded: state.isGameEnded,
+	field: state.field,
+});
+
+export const FieldLayout = connect(mapStateToProps)(OldFieldLayout);

@@ -1,9 +1,16 @@
 import { FieldLayout } from './FieldLayout';
+import { Component } from 'react';
 
-export const Field = () => {
-	return (
-		<div>
-			<FieldLayout />
-		</div>
-	);
-};
+export class OldField extends Component {
+	constructor() {
+		super();
+	}
+
+	render() {
+		return (
+			<div>
+				<FieldLayout />
+			</div>
+		);
+	}
+}
